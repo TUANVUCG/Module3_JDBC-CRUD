@@ -2,10 +2,7 @@ package DAO;
 
 import model.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +12,8 @@ public class UserDAO implements IUserDAO{
     public static final String INSERT_USER = "insert into user(name,email,country) value (? , ?, ?)";
     public static final String UPDATE_USER = "update user set name = ?, email =? , country = ? where id=?";
     public static final String DELETE_USER = "delete from user where id = ?";
+    public static final String SELECT_USER_BY_COUNTRY = "select * from user where country like ?";
+    public static final String ORDER_BY_NAME ="select * from user order by name";
 
     @Override
     public List<User> findAll() {
@@ -105,5 +104,49 @@ public class UserDAO implements IUserDAO{
             e.printStackTrace();
         }
         return rowDeleted !=0;
+    }
+
+
+    @Override
+    public List<User> findAllUserByCountry(String country) {
+        List<User> userList = new ArrayList<>();
+        Connection connection = SQLConnection.getConnection();
+        try {
+            CallableStatement callableStatement = connection.prepareCall(SELECT_USER_BY_COUNTRY);
+            callableStatement.setString(1,"%"+country+"%");
+            ResultSet resultSet = callableStatement.executeQuery();
+            while (resultSet.next()){
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                String country1 = resultSet.getString("country");
+                User user = new User(id,name,email,country1);
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    @Override
+    public List<User> sortAllUser() {
+        List<User> userList = new ArrayList<>();
+        Connection connection = SQLConnection.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(ORDER_BY_NAME);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                String country = resultSet.getString("country");
+                User user = new User(id,name,email,country);
+                userList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userList;
     }
 }

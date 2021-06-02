@@ -19,6 +19,7 @@ public class UserService implements IUserService{
         return userDAO.findById(id);
     }
 
+
     @Override
     public void createNewUser(User user) {
         userDAO.createNewUser(user);
@@ -33,4 +34,16 @@ public class UserService implements IUserService{
     public boolean deleteUser(int id) {
         return userDAO.deleteUser(id);
     }
+
+    @Override
+    public List<User> findAllUserByCountry(String country) {
+        return userDAO.findAllUserByCountry(country);
+    }
+
+    @Override
+    public List<User> sortAllUser() {
+        return userDAO.sortAllUser();
+    }
+
+
 }

@@ -55,7 +55,18 @@ public class UserServlet extends HttpServlet {
     }
 
     private void showUserList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<User> userList = userService.findAll();
+        String query = request.getParameter("search");
+        List<User> userList;
+        if(query==null||query.equals("")){
+            userList = userService.findAll();
+        }
+        else {
+            userList= userService.findAllUserByCountry(query);
+        }
+        String sort = request.getParameter("sort");
+        if(sort!=null){
+            userList= userService.sortAllUser();
+        }
         request.setAttribute("userList", userList);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/user/list.jsp");
         dispatcher.forward(request, response);

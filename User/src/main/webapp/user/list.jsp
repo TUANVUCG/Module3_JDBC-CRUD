@@ -25,6 +25,11 @@
 <body>
 <h1>User List</h1>
 <a href="/users?action=create">Create new user</a>
+<form>
+    <input type="text" placeholder="Search" name="search">
+    <button>Search</button>
+</form>
+<button><a href="/users?sort=true">Sort</a></button>
 <table>
     <tr>
         <th>Id</th>
